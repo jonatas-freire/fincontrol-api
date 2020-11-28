@@ -1,0 +1,37 @@
+package com.finance.control.model
+
+import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonProperty
+import java.util.*
+import javax.persistence.*
+
+@Entity
+@Table(name = "tb_receipt")
+class TransactionReceipt(
+        @Id
+        @GeneratedValue
+        @JsonProperty(value = "id", access = JsonProperty.Access.READ_ONLY)
+        @Column(name = "cd_receipt", unique = true, nullable = false)
+        override val id: Long = 0L,
+
+        @Column(name = "nm_receipt", length = 70, nullable = false)
+        override val name: String = "",
+
+        @Temporal(TemporalType.TIMESTAMP)
+        @Column(name = "dt_receipt", nullable = false)
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+        override val date: Calendar,
+
+        @Column(name = "ic_monthly_receipt")
+        override val monthly: Boolean = false,
+
+        @OneToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "cd_receipt_category", nullable = false)
+        override val category: CategoryReceipt,
+
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "cd_email", nullable = false)
+        override val user: User
+
+
+) : Transaction

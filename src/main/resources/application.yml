@@ -1,0 +1,48 @@
+spring:
+
+  application:
+    name:
+  datasource:
+    url: jdbc:mysql://localhost:3306/finance_control?createDatabaseIfNotExist=true&useSSL=false&useTimezone=true&serverTimezone=UTC
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+  jpa:
+    hibernate.ddl-auto: update
+
+mail:
+  from: jonatas.freire84@gmail.com
+  host: smtp.gmail.com
+  password: Jonatas123+
+  port: 465
+  protocol: smtp
+  smtp:
+    auth: true
+    debug: true
+    socketFactory:
+      fallback: false
+      port: 465
+    starttls:
+      enable: true
+      required: true
+  username: jonatas.freire84@gmail.com
+
+
+#    properties:
+#      mail:
+#        smtp:
+#          auth: true
+#          socketFactory:
+#            port: 465
+#            class: javax.net.ssl.SSLSocketFactory
+#            fallback: false
+
+jwt:
+  secret: mysecret
+server:
+  servlet:
+    context-path: /api/v1
+
+sendgrid:
+  api:
+    key: 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
