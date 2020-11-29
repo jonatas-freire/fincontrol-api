@@ -32,8 +32,6 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity) {
         http.cors().and().csrf().disable()
         http.authorizeRequests()
-                .antMatchers(HttpMethod.GET, *PUBLIC_MATCHERS)
-                .permitAll()
                 .antMatchers(HttpMethod.POST, *PUBLIC_MATCHERS_POST)
                 .permitAll()
                 .antMatchers(HttpMethod.PUT, *PUBLIC_MATCHERS_PUT)
@@ -79,8 +77,6 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     }
 
     companion object {
-        private val PUBLIC_MATCHERS = arrayOf(
-                "/pessoajuridica/**")
         private val PUBLIC_MATCHERS_POST = arrayOf(
                 "/user/signup",
                 "/user/reset/password",
@@ -88,6 +84,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
         )
         private val PUBLIC_MATCHERS_PUT = arrayOf(
                 "/user/reset/password",
+                "/user/authenticate",
         )
     }
 }

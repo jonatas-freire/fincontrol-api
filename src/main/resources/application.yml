@@ -46,3 +46,9 @@ server:
 sendgrid:
   api:
     key: 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
+
+com:
+  cloudinary:
+    cloud_name: jonatas-place
+    api_key: 743857935125836
+    api_secret: pmJHwVHdboe9WwsezMUZRHtMUYY

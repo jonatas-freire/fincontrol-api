@@ -1,6 +1,6 @@
 package com.finance.control.validation
 
-class UserValidation<T>(
-        val status: UserStatus,
+class UserValidation<T, P>(
+        val status: P,
         val result: T? = null,
 )

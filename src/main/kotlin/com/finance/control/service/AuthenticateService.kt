@@ -7,6 +7,7 @@ import com.finance.control.model.Authenticate
 import com.finance.control.model.AuthenticateType
 import com.finance.control.model.User
 import com.finance.control.repository.AuthenticateRepository
+import com.finance.control.repository.UserRepository
 import com.finance.control.validation.AuthenticationStatus
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -17,6 +18,9 @@ class AuthenticateService {
 
     @Autowired
     private lateinit var authenticateRepository: AuthenticateRepository
+
+    @Autowired
+    private lateinit var userRepository: UserRepository
 
     @Autowired
     private lateinit var bCryptPasswordEncoder: BCryptPasswordEncoder
@@ -55,19 +59,6 @@ class AuthenticateService {
 
     fun deleteCodeUser(email: String) {
         authenticateRepository.deleteByEmail(email)
-    }
-
-    fun validateAuthCode(auth: Authenticate): Boolean {
-        val normalizedAuth = auth.copy( code = bCryptPasswordEncoder.encode(auth.code))
-
-        return when(authenticateRepository.findByEmail(normalizedAuth.email)) {
-            null ->  false
-            else -> {
-                authenticateRepository.deleteByEmail(normalizedAuth.email)
-                true
-
-            }
-        }
     }
 
 

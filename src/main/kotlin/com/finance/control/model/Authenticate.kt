@@ -19,8 +19,9 @@ data class Authenticate (
         @Column(name = "dt_code_created")
         val createdAt: Calendar = Calendar.getInstance(),
 
+        @JsonProperty(value = "cd_type_auth", access = JsonProperty.Access.READ_ONLY)
         @Enumerated(EnumType.STRING)
         @Column( name="cd_type_auth")
-        val type: AuthenticateType
+        val type: AuthenticateType = AuthenticateType.AUTHENTICATE_USER
 
 )

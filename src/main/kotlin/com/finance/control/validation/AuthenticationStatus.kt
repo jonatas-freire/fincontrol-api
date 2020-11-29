@@ -6,4 +6,5 @@ enum class AuthenticationStatus {
     AUTHENTICATE_CODE_INVALID,
     AUTHENTICATION_SUCCESS,
     ERROR_SEND_EMAIL,
+    ERROR,
 }

@@ -20,15 +20,6 @@ class AuthenticateController {
     @Autowired
     private lateinit var  authenticateService: AuthenticateService
 
-    @PutMapping("/user")
-    fun authenticateUser(@RequestBody auth: Authenticate) {
-
-        when(userService.exist(auth.email)) {
-            null -> false
-            else -> authenticateService.validateAuthCode(auth)
-        }
-
-    }
 
 
 }

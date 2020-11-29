@@ -1,5 +1,6 @@
 package com.finance.control.service
 
+import com.finance.control.cloudinary.CloudinaryService
 import com.finance.control.model.Authenticate
 import com.finance.control.model.AuthenticateType
 import com.finance.control.model.User
@@ -24,8 +25,10 @@ class UserService {
     private lateinit var authenticateService: AuthenticateService
     @Autowired
     private lateinit var bCryptPasswordEncoder: BCryptPasswordEncoder
+    @Autowired
+    private lateinit var cloudinaryService: CloudinaryService
 
-    fun createOrAuthenticate(user: User): UserValidation<User?> {
+    fun createOrAuthenticate(user: User): UserValidation<User?, UserStatus> {
         val existsUser = userRepository.findByEmail(user.email)
                 ?: return create(user)
 
@@ -36,7 +39,7 @@ class UserService {
         }
     }
 
-    private fun create(user: User): UserValidation<User?> {
+    private fun create(user: User): UserValidation<User?, UserStatus> {
         return try {
             val normalizedUser = user.copy(
                     password = bCryptPasswordEncoder.encode(user.password),
@@ -53,7 +56,7 @@ class UserService {
         }
     }
 
-    fun solicitResetPassword(email: String): UserValidation<User?> {
+    fun solicitResetPassword(email: String): UserValidation<User?, UserStatus> {
         val userExist = exist(email)
                 ?: return UserValidation(UserStatus.EMAIL_NOT_FOUND)
 
@@ -67,7 +70,7 @@ class UserService {
         }
     }
 
-    fun resetPassword(email: String, code: String, password: String, confPassword: String): UserValidation<User?> {
+    fun resetPassword(email: String, code: String, password: String, confPassword: String): UserValidation<User?, UserStatus> {
         return try {
 
             if (password != confPassword)
@@ -90,8 +93,60 @@ class UserService {
 
     }
 
+    fun authenticate( auth: Authenticate ): UserValidation<Boolean?, AuthenticationStatus> {
+        return try {
+            val existAuth = authenticateService.existCodeUser(auth.email, auth.code)
+                    ?: return UserValidation(AuthenticationStatus.AUTHENTICATE_CODE_INVALID)
+
+            val user = userRepository.findByEmail(auth.email)
+                    ?: return UserValidation(AuthenticationStatus.AUTHENTICATE_CODE_INVALID)
+
+            val updatedUser = user.copy( auth = true )
+
+            authenticateService.deleteCodeUser(auth.email)
+
+            userRepository.save(updatedUser)
+
+            UserValidation(AuthenticationStatus.AUTHENTICATION_SUCCESS, true)
+
+        } catch (e: Exception) {
+            UserValidation(AuthenticationStatus.ERROR, true)
+        }
+
+    }
+
     fun exist(email: String): User? {
         return userRepository.findByEmail(email)
+    }
+
+    fun edit(user: User): UserValidation<User?, UserStatus>  {
+        val tokenEmail = getCurrentUserEmail()
+        val actualUserInfo = exist(tokenEmail)
+                ?: return UserValidation(UserStatus.EMAIL_NOT_FOUND)
+
+        try {
+            val hasNewPhoto = if (user.photo != "")
+                    cloudinaryService.upload(user.photo, mapOf(
+                            "overwrite" to true,
+                            "unique_filename" to true,
+                            "public_id" to user.email
+                    ))?.url
+                            ?: actualUserInfo.photo
+                else actualUserInfo.photo
+
+            val hasNewPassword = if(user.password != "")
+                    bCryptPasswordEncoder.encode(user.password)
+                else actualUserInfo.password
+
+            val updatedUser = userRepository.save(actualUserInfo.copy(
+                    name = user.name, photo = hasNewPhoto,
+                    password = hasNewPassword
+            ))
+
+            return UserValidation(UserStatus.USER_UPDATED, updatedUser)
+        } catch ( e: Exception ) {
+            return UserValidation(UserStatus.ERROR_UPDATE_USER)
+        }
     }
 
     private fun getCurrentUserEmail() = (
