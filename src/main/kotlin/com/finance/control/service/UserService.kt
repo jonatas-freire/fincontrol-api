@@ -1,10 +1,7 @@
 package com.finance.control.service
 
 import com.finance.control.cloudinary.CloudinaryService
-import com.finance.control.model.Authenticate
-import com.finance.control.model.AuthenticateType
-import com.finance.control.model.User
-import com.finance.control.model.UserDetailsImpl
+import com.finance.control.model.*
 import com.finance.control.repository.UserRepository
 import com.finance.control.validation.AuthenticationStatus
 import com.finance.control.validation.UserStatus
@@ -95,7 +92,7 @@ class UserService {
 
     fun authenticate( auth: Authenticate ): UserValidation<Boolean?, AuthenticationStatus> {
         return try {
-            val existAuth = authenticateService.existCodeUser(auth.email, auth.code)
+            authenticateService.existCodeUser(auth.email, auth.code)
                     ?: return UserValidation(AuthenticationStatus.AUTHENTICATE_CODE_INVALID)
 
             val user = userRepository.findByEmail(auth.email)
@@ -149,7 +146,19 @@ class UserService {
         }
     }
 
-    private fun getCurrentUserEmail() = (
+    fun updateBalance(user: User, transaction: TransactionHistory): User =
+            userRepository.save(
+                    when (transaction.type) {
+                        TransactionType.RECEIPT -> user.copy( balanceAvailable = user.balanceAvailable + transaction.amount)
+                        TransactionType.SPENT -> user.copy( balanceAvailable =  user.balanceAvailable - transaction.amount)
+                    }
+            )
+
+
+    fun getCurrentUser() =
+            userRepository.findByEmail(getCurrentUserEmail())
+
+    fun getCurrentUserEmail() = (
                 SecurityContextHolder
                         .getContext()
                         .authentication

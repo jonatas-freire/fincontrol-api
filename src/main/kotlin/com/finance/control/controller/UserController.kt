@@ -5,11 +5,11 @@ import com.finance.control.dto.*
 import com.finance.control.model.Authenticate
 import com.finance.control.model.User
 import com.finance.control.security.JWTUtil
-import com.finance.control.service.AuthenticateService
 import com.finance.control.service.UserService
 import com.finance.control.validation.AuthenticationStatus
 import com.finance.control.validation.UserStatus
 import io.swagger.annotations.ApiOperation
+import org.cloudinary.json.JSONObject
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -22,13 +22,11 @@ class UserController{
     @Autowired
     private lateinit var userService: UserService
 
-    @Autowired
-    private lateinit var authenticateService: AuthenticateService
+
 
     @Autowired
     private lateinit var  jwtUtil: JWTUtil
 
-    @ApiOperation(value = "Cadastro de Usuário")
     @PostMapping("/signup")
     fun signup(@RequestBody body: User): ResponseEntity<DTO<DTOUserCreate?>> {
         val statusSignup = userService.createOrAuthenticate(body)
@@ -79,7 +77,7 @@ class UserController{
                     status = 500, message = "Houve um erro ao enviar o email!", content = null
             )
             UserStatus.SEND_EMAIL -> DTO(
-                    status = 200, content = DTOSolicitResetPassword().transform(solicitResetPassword.result), message = "Codigo enviado com sucesso!"
+                    status = 200, content = DTOSolicitResetPassword.fromUser(solicitResetPassword.result), message = "Codigo enviado com sucesso!"
             )
             else -> DTO(
                     status = 500, message = "Houve um erro no servidor!", content = null
@@ -114,19 +112,23 @@ class UserController{
 
     @PutMapping("/authenticate")
     fun authenticate(@RequestBody body: Authenticate)
-        :ResponseEntity<DTO<String?>> {
+        :ResponseEntity<DTO<Map<String, String>?>> {
 
 
         val authenticate = userService.authenticate(body)
 
-        val dto: DTO<String?> = when( authenticate.status ) {
+        val dto: DTO<Map<String, String>?> = when( authenticate.status ) {
             AuthenticationStatus.AUTHENTICATE_CODE_INVALID -> DTO(
                     status = 404,
                     message = "Codigo invalido ou usuário nao encontrado"
             )
 
             AuthenticationStatus.AUTHENTICATION_SUCCESS -> DTO(
-                    status = 200, content = jwtUtil.generateToken(body.email), message = "Usuário autenticado"
+                    status = 200,
+                    content = mapOf(
+                                    "accessToken" to  jwtUtil.generateToken(body.email)
+                            ),
+                    message = "Usuário autenticado"
             )
 
             else -> DTO(status = 500, message = "Houve um erro no servidor")
@@ -151,6 +153,28 @@ class UserController{
             else -> DTO( status = 500, message = "Houve um erro no servidor")
         }
         return ResponseEntity.status(dto.status).body(dto)
+
+    }
+
+    @GetMapping("/info")
+    fun info(): ResponseEntity<DTO<DTOUser?>> {
+
+        val user = userService.getCurrentUser()
+
+        val dto: DTO<DTOUser?> = when ( user ) {
+            null -> DTO( status = 404, message = "Usuário nao encontrado")
+            else -> DTO(
+                    status = 200,
+                    message = "Aqui estao as informacoes dos usuários",
+                    content = DTOUser.fromUser(user)
+            )
+        }
+
+        return ResponseEntity.status(dto.status).body(dto)
+    }
+
+    @GetMapping( "/refreshToken")
+    fun refreshToken() {
 
     }
 

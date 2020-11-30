@@ -15,6 +15,6 @@ interface AuthenticateRepository : JpaRepository<Authenticate, Long> {
     fun deleteByCodeAndEmail( code: String, email: String )
     @Transactional
     @Modifying
-    @Query( "DELETE FROM Authenticate a where a.email = ?1")
+    @Query( "DELETE FROM Authenticate a where a.email = ?1 ")
     fun deleteByEmail( email: String )
 }

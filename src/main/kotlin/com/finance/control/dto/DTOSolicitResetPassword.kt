@@ -4,15 +4,18 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.finance.control.model.User
 import java.util.*
 
-class DTOSolicitResetPassword{
+class DTOSolicitResetPassword(
+        val email : String,
+        @JsonProperty(value = "id", access = JsonProperty.Access.READ_ONLY)
+        val id: UUID
+) {
 
-    lateinit var email : String
-    @JsonProperty(value = "id", access = JsonProperty.Access.READ_ONLY)
-    lateinit var id: UUID
 
-    fun transform( user: User? ): DTOSolicitResetPassword {
-        this.email = user!!.email
-        this.id = user.id
-        return this
+
+    companion object {
+        fun fromUser( user: User? ): DTOSolicitResetPassword {
+            return DTOSolicitResetPassword(user!!.email, user.id)
+        }
     }
+
 }

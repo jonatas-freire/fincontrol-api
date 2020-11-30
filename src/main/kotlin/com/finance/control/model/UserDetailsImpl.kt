@@ -18,4 +18,6 @@ class UserDetailsImpl(private val user: User) : UserDetails {
     override fun isAccountNonExpired() = true
 
     override fun isAccountNonLocked() = true
+
+    fun allInfo() = user
 }

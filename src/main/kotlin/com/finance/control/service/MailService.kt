@@ -13,7 +13,7 @@ import javax.mail.MessagingException
 class MailService {
 
     @Autowired
-    lateinit var  mailSender: JavaMailSender
+    private lateinit var  mailSender: JavaMailSender
 
     @Throws(MessagingException::class)
     fun send(message: Mail, isHtml: Boolean) {
