@@ -34,7 +34,7 @@ class TransactionController {
                 )
             TransactionListStatus.NOT_FOUND ->
                 DTO(
-                        status = 404, message = "Nao foram encontrada transações para esse usuário"
+                        status = 404, message = "Não foram encontrada transações para esse usuário"
                 )
             TransactionListStatus.ERROR -> DTO( status =  500, message = "Houve um erro no servidor")
         }
