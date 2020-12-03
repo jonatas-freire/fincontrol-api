@@ -49,7 +49,7 @@ class TransactionController {
                 DTO(
                         status = 200,
                         content = transactions.result,
-                        message = "Aqui estão todas as transações encontradas do tipo $type!"
+                        message = "Aqui estão todas as transações encontradas do tipo $type !"
                 )
             TransactionListStatus.NOT_FOUND ->
                 DTO(
