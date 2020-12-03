@@ -30,13 +30,13 @@ class TransactionController {
                 DTO(
                         status = 200,
                         content = transactions.result,
-                        message = "Aqui estão todas as transações encontradas"
+                        message = "Aqui estão todas as transações encontradas!"
                 )
             TransactionListStatus.NOT_FOUND ->
                 DTO(
-                        status = 404, message = "Não foram encontrada transações para esse usuário"
+                        status = 404, message = "Não foram encontrada transações para esse usuário!"
                 )
-            TransactionListStatus.ERROR -> DTO( status =  500, message = "Houve um erro no servidor")
+            TransactionListStatus.ERROR -> DTO( status =  500, message = "Houve um erro no servidor!")
         }
         return ResponseEntity.status(dto.status).body(dto)
     }
@@ -49,13 +49,13 @@ class TransactionController {
                 DTO(
                         status = 200,
                         content = transactions.result,
-                        message = "Aqui estão todas as transações encontradas do tipo $type"
+                        message = "Aqui estão todas as transações encontradas do tipo $type!"
                 )
             TransactionListStatus.NOT_FOUND ->
                 DTO(
-                        status = 404, message = "Não foram encontrada transações do tipo $type para esse usuário"
+                        status = 404, message = "Não foram encontrada transações do tipo $type para esse usuário!"
                 )
-            TransactionListStatus.ERROR -> DTO( status =  500, message = "Houve um erro no servidor")
+            TransactionListStatus.ERROR -> DTO( status =  500, message = "Houve um erro no servidor!")
         }
         return ResponseEntity.status(dto.status).body(dto)
 
@@ -68,9 +68,9 @@ class TransactionController {
             TransactionCreateStatus.TRANSACTION_CREATED ->
                 DTO( status = 200, content = createTransaction.result, message = "Transação criada!")
             TransactionCreateStatus.CATEGORY_NOT_FOUND ->
-                DTO( status = 404, message = "Categoria não encontrada")
+                DTO( status = 404, message = "Categoria não encontrada!")
             TransactionCreateStatus.ERROR ->
-                DTO( status = 500, message = "Houve um erro no servidor")
+                DTO( status = 500, message = "Houve um erro no servidor!")
         }
 
         return ResponseEntity.status(dto.status).body(dto)
@@ -81,12 +81,12 @@ class TransactionController {
         val deleteTransaction = transactionService.edit(id, body)
         val dto: DTO<Boolean?> = when (deleteTransaction.status) {
             TransactionEditStatus.TRANSACTION_EDITED ->
-                DTO( status = 200, content = true, message = "Transação editada")
+                DTO( status = 200, content = true, message = "Transação editada!")
             TransactionEditStatus.TRANSACTION_NOT_FOUND ->
-                DTO( status = 404, message = "Transação não encontrada")
+                DTO( status = 404, message = "Transação não encontrada!")
             TransactionEditStatus.CATEGORY_NOT_FOUND ->
-                DTO( status = 404, message = "Categoria não encontrada")
-            TransactionEditStatus.ERROR -> DTO( status = 500, message = "Houve um erro no servidor")
+                DTO( status = 404, message = "Categoria não encontrada!")
+            TransactionEditStatus.ERROR -> DTO( status = 500, message = "Houve um erro no servidor!")
 
         }
         return ResponseEntity.status(dto.status).body(dto)
@@ -97,10 +97,10 @@ class TransactionController {
         val deleteTransaction = transactionService.delete(id)
         val dto: DTO<Boolean?> = when (deleteTransaction.status) {
             TransactionDeleteStatus.TRANSACTION_DELETED ->
-                DTO( status = 200, content = true, message = "Transação deletada")
+                DTO( status = 200, content = true, message = "Transação deletada!")
             TransactionDeleteStatus.TRANSACTION_NOT_FOUND ->
-                DTO( status = 404, message = "Transação não encontrada")
-            TransactionDeleteStatus.ERROR -> DTO( status = 500, message = "Houve um erro no servidor")
+                DTO( status = 404, message = "Transação não encontrada!")
+            TransactionDeleteStatus.ERROR -> DTO( status = 500, message = "Houve um erro no servidor!")
         }
         return ResponseEntity.status(dto.status).body(dto)
     }
