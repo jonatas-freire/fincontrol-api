@@ -49,7 +49,7 @@ class UserController{
                 DTO(
                         status = 201,
                         content = DTOUserCreate.transform(statusSignup.result),
-                        message = "Autenticacao é necessário"
+                        message = "Autenticação é necessário"
                 )
 
             else ->
@@ -70,7 +70,7 @@ class UserController{
 
         val dto: DTO<DTOSolicitResetPassword?> = when (solicitResetPassword.status) {
             UserStatus.EMAIL_NOT_FOUND -> DTO(
-                    status = 404, message = "Usuário nao encontrado!", content = null
+                    status = 404, message = "Usuário não encontrado!", content = null
             )
             UserStatus.ERROR_SEND_EMAIL -> DTO(
                     status = 500, message = "Houve um erro ao enviar o email!", content = null
@@ -99,7 +99,7 @@ class UserController{
         )
 
         val dto: DTO<Boolean?> = when( resetPassword.status ) {
-            UserStatus.EMAIL_NOT_FOUND -> DTO(status = 404, message = "Usuário nao encontrado")
+            UserStatus.EMAIL_NOT_FOUND -> DTO(status = 404, message = "Usuário não encontrado")
             UserStatus.CODE_NOT_FOUND -> DTO(status = 404, message = "Codigo de autenticacao invalido")
             UserStatus.PASSWORDS_NOT_EQUAL -> DTO(status = 400, message = "As senhas devem ser iguais")
             UserStatus.PASSWORD_RESETED -> DTO(status = 200, content = true, message = "A senha foi alterada!")
@@ -119,7 +119,7 @@ class UserController{
         val dto: DTO<Map<String, String>?> = when( authenticate.status ) {
             AuthenticationStatus.AUTHENTICATE_CODE_INVALID -> DTO(
                     status = 404,
-                    message = "Codigo invalido ou usuário nao encontrado"
+                    message = "Codigo invalido ou usuário não encontrado"
             )
 
             AuthenticationStatus.AUTHENTICATION_SUCCESS -> DTO(
@@ -143,7 +143,7 @@ class UserController{
         val editUser = userService.edit(body)
         val dto: DTO<DTOUserEdit?> = when ( editUser.status ) {
             UserStatus.ERROR_UPDATE_USER -> DTO( status = 500, message = "Houve um erro ao atualizar o usuário")
-            UserStatus.EMAIL_NOT_FOUND ->  DTO( status = 404, message = "Usuário nao encontrado")
+            UserStatus.EMAIL_NOT_FOUND ->  DTO( status = 404, message = "Usuário não encontrado")
             UserStatus.USER_UPDATED -> DTO(
                     status = 200,
                     content = DTOUserEdit.fromUser(editUser.result),
@@ -161,10 +161,10 @@ class UserController{
         val user = userService.getCurrentUser()
 
         val dto: DTO<DTOUser?> = when ( user ) {
-            null -> DTO( status = 404, message = "Usuário nao encontrado")
+            null -> DTO( status = 404, message = "Usuário não encontrado")
             else -> DTO(
                     status = 200,
-                    message = "Aqui estao as informacoes dos usuários",
+                    message = "Aqui estão as informações dos usuários",
                     content = DTOUser.fromUser(user)
             )
         }
