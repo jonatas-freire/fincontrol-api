@@ -31,12 +31,11 @@ class UserController{
     fun signup(@RequestBody body: User): ResponseEntity<DTO<DTOUserCreate?>> {
         val statusSignup = userService.createOrAuthenticate(body)
 
-        val userCreate = DTOUserCreate().transform(statusSignup.result) ?: null
         val dto: DTO<DTOUserCreate?> = when (statusSignup.status){
             UserStatus.CREATED ->
                 DTO(
                         status = 200,
-                        content = userCreate,
+                        content = DTOUserCreate.transform(statusSignup.result),
                         message = "Usuário criado!"
                 )
 
@@ -49,7 +48,7 @@ class UserController{
             UserStatus.EMAIL_NOT_AUTHENTICATED ->
                 DTO(
                         status = 201,
-                        content = userCreate,
+                        content = DTOUserCreate.transform(statusSignup.result),
                         message = "Autenticacao é necessário"
                 )
 
@@ -63,7 +62,7 @@ class UserController{
         return ResponseEntity.status(dto.status).body(dto)
     }
 
-    @PostMapping("/reset/password")
+    @PostMapping("/solicit/password")
     fun solicitResetPassword(@RequestBody body: DTOSolicitResetPassword) :
             ResponseEntity<DTO<DTOSolicitResetPassword?>> {
 
@@ -88,7 +87,7 @@ class UserController{
 
     }
 
-    @PutMapping("/reset/password")
+    @PostMapping("/reset/password")
     fun resetPassword(@RequestBody body: DTOResetPassword) :
             ResponseEntity<DTO<Boolean?>> {
 
@@ -110,7 +109,7 @@ class UserController{
         return ResponseEntity.status(dto.status).body(dto)
     }
 
-    @PutMapping("/authenticate")
+    @PostMapping("/authenticate")
     fun authenticate(@RequestBody body: Authenticate)
         :ResponseEntity<DTO<Map<String, String>?>> {
 

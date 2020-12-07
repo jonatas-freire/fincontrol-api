@@ -7,7 +7,7 @@ import java.util.*
 class DTOSolicitResetPassword(
         val email : String,
         @JsonProperty(value = "id", access = JsonProperty.Access.READ_ONLY)
-        val id: UUID
+        val id: UUID = UUID.randomUUID()
 ) {
 
 

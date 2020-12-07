@@ -138,4 +138,10 @@ class TransactionService {
             Validation(TransactionDeleteStatus.ERROR)
         }
     }
+
+    fun findOne(id: Long): TransactionHistory? {
+        val user =  userService.getCurrentUser()
+                ?: return null
+        return transactionRepository.findByIdAndUser(id,user);
+    }
 }

@@ -13,7 +13,8 @@ class CloudinaryService {
     ): CloudinaryModel? {
         return try {
             val cloudinary = Cloudinary("cloudinary://743857935125836:pmJHwVHdboe9WwsezMUZRHtMUYY@jonatas-place" )
-            val response = cloudinary.uploader().upload(image, options ?: ObjectUtils.emptyMap())
+            val response = cloudinary.uploader()
+                    .upload(image, options ?: ObjectUtils.emptyMap())
 
             CloudinaryModel.fromMap(response as Map<Any, Any>)
         } catch ( e: Exception ) {

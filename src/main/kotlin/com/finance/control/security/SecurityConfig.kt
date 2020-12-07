@@ -38,8 +38,6 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
         http.authorizeRequests()
                 .antMatchers(HttpMethod.POST, *PUBLIC_MATCHERS_POST)
                 .permitAll()
-                .antMatchers(HttpMethod.PUT, *PUBLIC_MATCHERS_PUT)
-                .permitAll()
                 .anyRequest()
                 .authenticated()
         http.addFilter(JWTAuthenticationFilter(authenticationManager(), jwtUtil, authenticateService))
@@ -84,11 +82,9 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     companion object {
         private val PUBLIC_MATCHERS_POST = arrayOf(
                 "/user/signup",
+                "/user/solicit/password",
                 "/user/reset/password",
                 "/auth/user",
-        )
-        private val PUBLIC_MATCHERS_PUT = arrayOf(
-                "/user/reset/password",
                 "/user/authenticate",
         )
     }

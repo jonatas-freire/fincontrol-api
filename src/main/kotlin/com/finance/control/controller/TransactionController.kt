@@ -22,6 +22,17 @@ class TransactionController {
     @Autowired
     lateinit var transactionService: TransactionService
 
+    @GetMapping("/{id}")
+    fun one(@PathVariable( name = "id") id: Long): ResponseEntity<DTO<TransactionHistory?>> {
+
+        val transaction = transactionService.findOne(id);
+        val dto: DTO<TransactionHistory?> = when (transaction) {
+            null -> DTO( status = 404, message = "Não foi encontrada a transação")
+            else -> DTO( status = 200, content = transaction, message = "Aqui esta a transação")
+        }
+        return ResponseEntity.status(dto.status).body(dto)
+    }
+
     @GetMapping("/all")
     fun list(): ResponseEntity<DTO<List<TransactionHistory>?>> {
         val transactions = transactionService.listAll()
@@ -76,7 +87,7 @@ class TransactionController {
         return ResponseEntity.status(dto.status).body(dto)
     }
 
-    @PutMapping("/edit/{id}")
+    @PostMapping("/edit/{id}")
     fun edit(@PathVariable( name = "id") id: Long, @RequestBody body: Transaction ): ResponseEntity<DTO<Boolean?>> {
         val deleteTransaction = transactionService.edit(id, body)
         val dto: DTO<Boolean?> = when (deleteTransaction.status) {
@@ -92,7 +103,7 @@ class TransactionController {
         return ResponseEntity.status(dto.status).body(dto)
     }
 
-    @DeleteMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     fun delete(@PathVariable( name = "id") id: Long): ResponseEntity<DTO<Boolean?>> {
         val deleteTransaction = transactionService.delete(id)
         val dto: DTO<Boolean?> = when (deleteTransaction.status) {
